@@ -54,7 +54,6 @@ read -d '' PHP_NO_SSL <<EOF
             fastcgi_index index.php;
             include fastcgi_params;
             fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-            fastcgi_param LARA_ENV local; # Environment variable for Laravel
             fastcgi_param HTTPS off;
         }
 EOF
@@ -72,7 +71,6 @@ read -d '' PHP_WITH_SSL <<EOF
             fastcgi_index index.php;
             include fastcgi_params;
             fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-            fastcgi_param LARA_ENV local; # Environment variable for Laravel
             fastcgi_param HTTPS on;
         }
 EOF
@@ -92,7 +90,6 @@ read -d '' PHP_NO_SSL <<EOF
             fastcgi_index index.php;
             include fastcgi_params;
             fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-            fastcgi_param LARA_ENV local; # Environment variable for Laravel
             fastcgi_param HTTPS off;
         }
 EOF
@@ -109,7 +106,6 @@ read -d '' PHP_WITH_SSL <<EOF
             fastcgi_index index.php;
             include fastcgi_params;
             fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-            fastcgi_param LARA_ENV local; # Environment variable for Laravel
             fastcgi_param HTTPS on;
         }
 EOF
@@ -132,7 +128,7 @@ cat <<EOF
         charset utf-8;
 
         location / {
-            try_files \$uri \$uri/ /app.php?\$query_string /index.php?\$query_string;
+            try_files \$uri /app_dev.php?\$query_string /app.php?\$query_string /index.php?\$query_string;
         }
 
         location = /favicon.ico { log_not_found off; access_log off; }
@@ -167,7 +163,7 @@ cat <<EOF
         charset utf-8;
 
         location / {
-            try_files \$uri \$uri/ /app.php?\$query_string /index.php?\$query_string;
+            try_files \$uri /app_dev.php?\$query_string /app.php?\$query_string /index.php?\$query_string;
         }
 
         location = /favicon.ico { log_not_found off; access_log off; }
@@ -236,7 +232,7 @@ else
     # Enable the Server Block and reload Nginx
     if [[ $EnableServerBlock -eq 1 ]]; then
         # Enable Server Block
-        ngxen ${ServerBlockName}
+        /usr/local/bin/ngxen ${ServerBlockName}
 
         # Reload Nginx
         service nginx reload
