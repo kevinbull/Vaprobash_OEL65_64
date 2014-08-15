@@ -4,16 +4,10 @@ PHP_TIMEZONE=$1
 
     echo ">>> Installing PHP"
 
-    #sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
-    #sudo add-apt-repository -y ppa:ondrej/php5
-
-    #sudo apt-key update
-    #sudo apt-get update
-
     # Install PHP
     #sudo yum install -y php5-cli php5-fpm php5-mysql php5-pgsql php5-sqlite php5-curl php5-gd php5-gmp php5-mcrypt php5-xdebug php5-memcached php5-imagick php5-intl
     
-    sudo yum -y --enablerepo=remi,remi-php55 install php php-cli php-fpm php-bcmath php-curl php-gd php-gmp php-mcrypt php-igbinary php-igbinary-devel php-ldap php-imagick php-intl php-odbc php-openssl php-pspell php-pdo php-xdebug php-xhprof php-zip
+    sudo yum -y --enablerepo=remi,remi-php55 install php-devel php php-cli php-fpm php-bcmath php-curl php-gd php-gmp php-mcrypt php-igbinary-devel php-igbinary php-imap php-ldap php-imagick php-intl php-odbc php-openssl php-pspell php-pdo php-xdebug php-xhprof php-zip
     # Need to figure out how to add php-pdo_oci which also loads php-oci8 as a dependency
 
     # Set PHP FPM to listen on TCP instead of Socket
@@ -58,4 +52,14 @@ EOF
     # PHP Turn off the X-Powered-By Header that broadcasts the PHP version
     sudo sed -i "s/expose_php =.*/expose_php = Off/" /etc/php.ini
 
+    # Install phpredis from GitHub
+    sudo mkdir -p /usr/src/phpredis
+    sudo git clone https://github.com/nicolasff/phpredis.git /usr/src/phpredis
+    cd /usr/src/phpredis
+    sudo phpize
+    sudo ./configure --enable-redis-igbinary
+    sudo make
+    sudo make install
+    
+    # Start/Restart the frm service
     sudo service php-fpm restart
