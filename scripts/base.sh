@@ -34,11 +34,14 @@ git config --global credential.helper 'cache --timeout=86400'
 echo "adding rpm repository"
 sudo rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 
+wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+sudo rpm -ivh epel-release-6-8.noarch.rpm
+
 # Set the server timezone
 echo "setting timezone to #{server_timezone}; ln -sf /usr/share/zoneinfo/#{server_timezone} /etc/localtime"
 
 
-echo ">>> Installing *.xip.io self-signed SSL"
+echo ">>> Installing *.thelogue.dev self-signed SSL"
 
 SSL_DIR="/etc/ssl/thelogue.dev"
 DOMAIN="*.thelogue.dev"
