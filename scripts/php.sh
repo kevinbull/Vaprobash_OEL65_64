@@ -1,42 +1,20 @@
 #!/usr/bin/env bash
 
 PHP_TIMEZONE=$1
-HHVM=$2
 
-if [[ $HHVM == "true" ]]; then
-
-    echo ">>> Installing HHVM"
-
-    # Get key and add to sources
-    wget --quiet -O - http://dl.hhvm.com/conf/hhvm.gpg.key | sudo apt-key add -
-    echo deb http://dl.hhvm.com/ubuntu trusty main | sudo tee /etc/apt/sources.list.d/hhvm.list
-
-    # Update
-    sudo apt-get update
-
-    # Install HHVM
-    # -qq implies -y --force-yes
-    sudo apt-get install -qq hhvm
-
-    # Start on system boot
-    sudo update-rc.d hhvm defaults
-
-    # Replace PHP with HHVM via symlinking
-    sudo /usr/bin/update-alternatives --install /usr/bin/php php /usr/bin/hhvm 60
-
-    sudo service hhvm restart
-else
     echo ">>> Installing PHP"
 
-    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
-    sudo add-apt-repository -y ppa:ondrej/php5
+    #sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
+    #sudo add-apt-repository -y ppa:ondrej/php5
 
-    sudo apt-key update
-    sudo apt-get update
+    #sudo apt-key update
+    #sudo apt-get update
 
     # Install PHP
     # -qq implies -y --force-yes
-    sudo apt-get install -qq php5-cli php5-fpm php5-mysql php5-pgsql php5-sqlite php5-curl php5-gd php5-gmp php5-mcrypt php5-xdebug php5-memcached php5-imagick php5-intl
+    #sudo yum install -y php5-cli php5-fpm php5-mysql php5-pgsql php5-sqlite php5-curl php5-gd php5-gmp php5-mcrypt php5-xdebug php5-memcached php5-imagick php5-intl
+    
+    yum --enablerepo=remi,remi-php55 install php
 
     # Set PHP FPM to listen on TCP instead of Socket
     sudo sed -i "s/listen =.*/listen = 127.0.0.1:9000/" /etc/php5/fpm/pool.d/www.conf
@@ -79,4 +57,3 @@ EOF
     sudo sed -i "s/;date.timezone =.*/date.timezone = ${PHP_TIMEZONE/\//\\/}/" /etc/php5/cli/php.ini
 
     sudo service php5-fpm restart
-fi
