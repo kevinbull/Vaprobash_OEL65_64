@@ -41,32 +41,40 @@ sudo yum install -y nginx
 # Turn off sendfile to be more compatible with Windows, which can't use NFS
 sudo sed -i 's/sendfile on;/sendfile off;/' /etc/nginx/nginx.conf
 
+# Set the number of worker processes, typically this should be the number of CPU cores available
+# cat /proc/cpuinfo| grep processor
+sudo sed -i 's/worker_processes.*/worker_processes 1;/' /etc/nginx/nginx.conf
+
 # Set run-as user for PHP5-FPM processes to user/group "vagrant"
 # to avoid permission errors from apps writing to files
 sudo sed -i "s/user.*nginx;/user vagrant;/" /etc/nginx/nginx.conf
+
+# Set the virtual server name to something large enough - 64 should do it
 sudo sed -i "s/http.*{/http {\n    server_names_hash_bucket_size 64;/" /etc/nginx/nginx.conf
 
-# Add vagrant user to www-data group
-usermod -a -G www-data vagrant
+sudo mkdir /etc/nginx/sites-enabled
+sudo mkdir /etc/nginx/sites-available
 
 # Nginx enabling and disabling virtual hosts
-curl --silent -L $github_url/helpers/ngxen.sh > ngxen
-curl --silent -L $github_url/helpers/ngxdis.sh > ngxdis
-curl --silent -L $github_url/helpers/ngxcb.sh > ngxcb
-sudo chmod guo+x ngxen ngxdis ngxcb
-sudo mv ngxen ngxdis ngxcb /usr/local/bin
+sudo curl --silent -L $github_url/helpers/ngxen.sh > ngxen
+sudo curl --silent -L $github_url/helpers/ngxdis.sh > ngxdis
+sudo curl --silent -L $github_url/helpers/ngxcb.sh > ngxcb
+sudo chmod +x ngxen ngxdis ngxcb
+sudo chown root:root ngxen ngxdis ngxcb
+# Move these files to a directory in the vagrant and root user PATH
+sudo mv ngxen ngxdis ngxcb /usr/bin
 
-# Create Nginx Server Block named "vagrant" and enable it
-sudo ngxcb -d $public_folder -s "$1.xip.io$hostname" -e
+# Create Nginx Server Block named $hostname and enable it
+sudo ngxcb -d $public_folder -n $hostname -s "$1.xip.io$hostname" -e
 
 # Disable "default"
 sudo ngxdis default
 
 if [[ $HHVM_IS_INSTALLED -ne 0 && $PHP_IS_INSTALLED -eq 0 ]]; then
     # PHP-FPM Config for Nginx
-    sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php5/fpm/php.ini
+    sudo sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php.ini
 
-    sudo service php5-fpm restart
+    sudo service php-fpm restart
 fi
 
 sudo service nginx restart
