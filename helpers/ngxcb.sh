@@ -117,7 +117,7 @@ cat <<EOF
         listen 80;
 
         root $DocumentRoot;
-        index index.html index.htm index.php app.php app_dev.php;
+        index app.php app_dev.php index.html index.htm index.php;
 
         # Make site accessible from ...
         server_name $ServerName;
@@ -148,8 +148,8 @@ cat <<EOF
         listen 443;
 
         ssl on;
-        ssl_certificate     /etc/ssl/xip.io/xip.io.crt;
-        ssl_certificate_key /etc/ssl/xip.io/xip.io.key;
+        ssl_certificate     /etc/ssl/thelogue.dev/thelogue.dev.crt;
+        ssl_certificate_key /etc/ssl/thelogue.dev/thelogue.dev.key;
 
         root $DocumentRoot;
         index index.html index.htm index.php app.php app_dev.php;
