@@ -21,12 +21,6 @@ server_ip             = "192.168.56.120"
 server_memory         = "1024" # MB
 server_swap           = "2048" # Options: false | int (MB) - Guideline: Between one or two times the server_memory
 
-# UTC        for Universal Coordinated Time
-# EST        for Eastern Standard Time
-# US/Central for American Central
-# US/Eastern for American Eastern
-server_timezone  = "US/Central"
-
 # Languages and Packages
 php_timezone          = "America/Chicago"    # http://php.net/manual/en/timezones.php
 
@@ -91,8 +85,8 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Set the server timezone
-  config.vm.provision "shell",
-    inline: "echo setting timezone to #{server_timezone}; ln -sf /usr/share/zoneinfo/#{server_timezone} /etc/localtime"
+  #config.vm.provision "shell",
+  #  inline: "echo setting timezone to #{server_timezone}; ln -sf /usr/share/zoneinfo/#{server_timezone} /etc/localtime"
 
   # Provision Base Packages
   config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap]
