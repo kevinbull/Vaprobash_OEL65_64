@@ -232,7 +232,7 @@ else
     # Enable the Server Block and reload Nginx
     if [[ $EnableServerBlock -eq 1 ]]; then
         # Enable Server Block
-        /usr/local/bin/ngxen ${ServerBlockName}
+        ngxen ${ServerBlockName}
 
         # Reload Nginx
         service nginx reload
