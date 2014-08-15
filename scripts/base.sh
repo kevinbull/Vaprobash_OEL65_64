@@ -31,14 +31,15 @@ git config --global http.postBuffer 65536000
 # Cache http credentials for one day while pull/push
 git config --global credential.helper 'cache --timeout=86400'
 
-echo "adding rpm repository"
-sudo rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-
+echo "adding rpm repositories"
 wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 sudo rpm -ivh epel-release-6-8.noarch.rpm
 
+sudo rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+
+
 # Set the server timezone
-echo "setting timezone to #{server_timezone}; ln -sf /usr/share/zoneinfo/#{server_timezone} /etc/localtime"
+echo "setting timezone to #{server_timezone}; sudo ln -sf /usr/share/zoneinfo/#{server_timezone} /etc/localtime"
 
 
 echo ">>> Installing *.thelogue.dev self-signed SSL"
