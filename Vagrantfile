@@ -24,9 +24,6 @@ server_swap           = "2048" # Options: false | int (MB) - Guideline: Between 
 # Languages and Packages
 php_timezone          = "America/Chicago"    # http://php.net/manual/en/timezones.php
 
-# To install HHVM instead of PHP, set this to "true"
-hhvm                  = "false"
-
 # PHP Options
 composer_packages     = [        # List any global Composer packages that you want to install
   #"phpunit/phpunit:4.0.*",
@@ -92,7 +89,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap]
 
   # Provision PHP
-  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm]
+  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone]
 
   # Enable MSSQL for PHP
   # config.vm.provision "shell", path: "#{github_url}/scripts/mssql.sh"
@@ -109,7 +106,7 @@ Vagrant.configure("2") do |config|
   # config.vm.provision "shell", path: "#{github_url}/scripts/apache.sh", args: [server_ip, public_folder, hostname, github_url]
 
   # Provision Nginx Base
-  # config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url]
+  config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url]
 
 
   ####
