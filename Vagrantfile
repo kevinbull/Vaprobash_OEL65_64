@@ -96,7 +96,7 @@ Vagrant.configure("2") do |config|
 
   # We want to do this before nginx so that the restart of services will pick it up
   # Provision Oracle
-  #config.vm.provision "shell", path: "#{github_url}/scripts/oracle.sh"
+    config.vm.provision "shell", path: "#{github_url}/scripts/oracle.sh"
 
   ####
   # Web Servers
