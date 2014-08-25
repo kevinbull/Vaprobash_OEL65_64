@@ -15,4 +15,5 @@ export PATH=$PATH:/usr/lib/oracle/12.1/client64/bin
 echo "Installing Pecl OCI8"
 echo "instantclient,/usr/lib/oracle/12.1/client64/lib" | sudo pecl install oci8
 
-sudo sed -e "$a\extension=oci8.so"
+sudo chown vagrant:vagrant /etc/php.ini
+sudo echo "extension=oci8.so" >> /etc/php.ini

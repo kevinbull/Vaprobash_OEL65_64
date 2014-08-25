@@ -7,12 +7,13 @@ $password = 'l0guePASSw0rd';
 $database = 'logue';
 //.thelogue.com';
 $table    = 'TEST_TABLE';
+$table    = 'user_tables';
 $port     = '1542';
 
 //  Configuration - End
 
 $query    = 'Select count(*) from ' . $table;
-
+//$query    = 'select table_name from user_tables order by table_name';
 //  Connect to Oracle Database.
 /*
 $oracledb = '(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = ' . $server . ')(PORT = ' . $port .
@@ -53,8 +54,8 @@ if(function_exists('oci_new_connect')){
 	}
 
 	//  Print first row of results.
-	print "Count: " . join(" ",$rows[0]) . "\n";
-	print "Success\n";
+	print "Success!!\nThe query $query returned:\n";
+	print join(" ",$rows[0]) . "\n";
 }else{
 	print "oci_new_connect is not found!!!!";
 	exit;

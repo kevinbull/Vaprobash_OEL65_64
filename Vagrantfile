@@ -62,7 +62,7 @@ Vagrant.configure("2") do |config|
   # If using VirtualBox
   config.vm.provider :virtualbox do |vb|
 
-    vb.name = "Logue"
+    vb.name = "Logue_OL65"
 
     # Set server memory
     vb.customize ["modifyvm", :id, "--memory", server_memory]
@@ -96,7 +96,7 @@ Vagrant.configure("2") do |config|
 
   # We want to do this before nginx so that the restart of services will pick it up
   # Provision Oracle
-  config.vm.provision "shell", path: "#{github_url}/scripts/oracle.sh"
+  #config.vm.provision "shell", path: "#{github_url}/scripts/oracle.sh"
 
   ####
   # Web Servers
