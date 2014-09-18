@@ -39,7 +39,7 @@ fi
 sudo yum install -y nginx
 
 # Turn off sendfile to be more compatible with Windows, which can't use NFS
-sudo sed -i 's/sendfile on;/sendfile off;/' /etc/nginx/nginx.conf
+sudo sed -i 's/sendfile.*/sendfile off;/' /etc/nginx/nginx.conf
 
 # Set the number of worker processes, typically this should be the number of CPU cores available
 # cat /proc/cpuinfo| grep processor
@@ -55,20 +55,23 @@ sudo sed -i "s/http.*{/http {\n    server_names_hash_bucket_size 64;/" /etc/ngin
 sudo mkdir /etc/nginx/sites-enabled
 sudo mkdir /etc/nginx/sites-available
 
-# Nginx enabling and disabling virtual hosts
-sudo curl --silent -L $github_url/helpers/ngxen.sh > ngxen
-sudo curl --silent -L $github_url/helpers/ngxdis.sh > ngxdis
-sudo curl --silent -L $github_url/helpers/ngxcb.sh > ngxcb
-sudo chmod +x ngxen ngxdis ngxcb
-sudo chown root:root ngxen ngxdis ngxcb
-# Move these files to a directory in the vagrant and root user PATH
-sudo mv ngxen ngxdis ngxcb /usr/bin
+# Set to look for confs in sites-enabled
+sudo sed -i "s/include \/etc\/nginx\/conf.d\/.*;/include \/etc\/nginx\/sites-enabled\/\*.conf;/" /etc/nginx/nginx.conf
 
-# Create Nginx Server Block named $hostname and enable it
-sudo ngxcb -d $public_folder -n $hostname -s "$1.xip.io$hostname" -e
+# Nginx enabling and disabling virtual hosts
+# sudo curl --silent -L $github_url/helpers/ngxen.sh > ngxen
+# sudo curl --silent -L $github_url/helpers/ngxdis.sh > ngxdis
+# sudo curl --silent -L $github_url/helpers/ngxcb.sh > ngxcb
+# sudo chmod +x ngxen ngxdis ngxcb
+# sudo chown root:root ngxen ngxdis ngxcb
+# # Move these files to a directory in the vagrant and root user PATH
+# sudo mv ngxen ngxdis ngxcb /usr/bin
+
+# # Create Nginx Server Block named $hostname and enable it
+# sudo ngxcb -d $public_folder -n $hostname -s "$1.xip.io$hostname" -e
 
 # Disable "default"
-sudo ngxdis default
+#sudo ngxdis default
 
 if [[ $HHVM_IS_INSTALLED -ne 0 && $PHP_IS_INSTALLED -eq 0 ]]; then
     # PHP-FPM Config for Nginx
@@ -76,5 +79,16 @@ if [[ $HHVM_IS_INSTALLED -ne 0 && $PHP_IS_INSTALLED -eq 0 ]]; then
 
     sudo service php-fpm restart
 fi
+
+sudo rm -rf /etc/nginx/conf.d/*
+
+# create the web root for the logue
+sudo mkdir -p /vagrant/thelogue
+echo "<?php phpinfo();" > /vagrant/thelogue/app.php
+
+# copy the thelogue conf file and activate it
+sudo cp /vagrant/files/thelogue.dev.conf /etc/nginx/sites-available/thelogue.dev.conf
+sudo ln -s /etc/nginx/sites-available/thelogue.dev.conf /etc/nginx/sites-enabled/thelogue.dev.conf
+
 
 sudo service nginx restart

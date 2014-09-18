@@ -1,7 +1,17 @@
-# Contributing to Vaprobash
+TheLogueBash
+=============
 
-Please make pull requests to the **Master** branch.
+This is a set of scripts to get a local development environment up and running for The Logue.
 
-Vaprobash now uses SemVer, so bug fixes/tweaks will create patch releases and new features will create minor releases.
+Installation
+--------------
 
-Note that this means that bug fixes and minor tweaks will likely get accepted before feature additions, however all PR's will be reviewed!
+```sh
+git clone [git-repo-url] LogueVM
+cd LogueVM
+vagrant up
+vagrant ssh
+cd /vagrant/scripts
+sh ssh.sh [your-github-username] [your-github-password]
+sh install_thelogue.sh
+```
