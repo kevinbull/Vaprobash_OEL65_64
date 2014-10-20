@@ -8,10 +8,18 @@ else
     github_url="$1"
 fi
 
+if [[ -z $3 ]]; then
+    server_domain="thelogue.dev"
+else
+    server_domain="$3"
+fi
+
+# Refer to /usr/share/zoneinfo for possible zone files
 # UTC        for Universal Coordinated Time
 # EST        for Eastern Standard Time
 # US/Central for American Central
 # US/Eastern for American Eastern
+# America/Chicago
 server_timezone  = "US/Central"
 
 # Update
@@ -39,14 +47,15 @@ sudo rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 
 
 # Set the server timezone
-echo "setting timezone to #{server_timezone}; sudo ln -sf /usr/share/zoneinfo/#{server_timezone} /etc/localtime"
+echo "setting timezone to $server_timezone"
+sudo ln -sf /usr/share/zoneinfo/$server_timezone /etc/localtime
 
 
-echo ">>> Installing *.thelogue.dev self-signed SSL"
+echo ">>> Installing *.$server_domain self-signed SSL"
 
-SSL_DIR="/etc/ssl/thelogue.dev"
-DOMAIN="*.thelogue.dev"
-PASSPHRASE="logue"
+SSL_DIR="/etc/ssl/$server_domain"
+DOMAIN="*.$server_domain"
+PASSPHRASE="INeedABeachVacation!"
 
 SUBJ="
 C=US
@@ -60,9 +69,9 @@ emailAddress=
 
 sudo mkdir -p "$SSL_DIR"
 
-sudo openssl genrsa -out "$SSL_DIR/thelogue.dev.key" 1024
-sudo openssl req -new -subj "$(echo -n "$SUBJ" | tr "\n" "/")" -key "$SSL_DIR/thelogue.dev.key" -out "$SSL_DIR/thelogue.dev.csr" -passin pass:$PASSPHRASE
-sudo openssl x509 -req -days 365 -in "$SSL_DIR/xip.io.csr" -signkey "$SSL_DIR/thelogue.dev.key" -out "$SSL_DIR/thelogue.dev.crt"
+sudo openssl genrsa -out "$SSL_DIR/$server_domain.key" 1024
+sudo openssl req -new -subj "$(echo -n "$SUBJ" | tr "\n" "/")" -key "$SSL_DIR/$server_domain.key" -out "$SSL_DIR/$server_domain.csr" -passin pass:$PASSPHRASE
+sudo openssl x509 -req -days 365 -in "$SSL_DIR/xip.io.csr" -signkey "$SSL_DIR/$server_domain.key" -out "$SSL_DIR/$server_domain.crt"
 
 # Setting up Swap
 
