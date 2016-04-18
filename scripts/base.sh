@@ -9,7 +9,7 @@ else
 fi
 
 if [[ -z $3 ]]; then
-    server_domain="thelogue.dev"
+    server_domain="dev.krb.local"
 else
     server_domain="$3"
 fi
@@ -60,8 +60,8 @@ PASSPHRASE="INeedABeachVacation!"
 SUBJ="
 C=US
 ST=Texas
-O=ClearC2
-localityName=Coppell
+O=KRB
+localityName=Irving
 commonName=$DOMAIN
 organizationalUnitName=
 emailAddress=
