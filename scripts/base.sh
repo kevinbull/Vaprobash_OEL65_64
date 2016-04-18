@@ -81,12 +81,14 @@ shopt -s nocasematch
 if [[ ! -z $2 && ! $2 =~ false && $2 =~ ^[0-9]*$ ]]; then
 
     echo ">>> Setting up Swap ($2 MB)"
+    # Swap file is MB * blocksize so swap size = 2048 * 1024
+    let "swapsize = $2 * 1024"
 
     # Create the Swap file
-    sudo fallocate -l $2M /swapfile
+    sudo sudo dd if=/dev/zero of=/swapfile bs=1024 count=$swapsize
 
     # Set the correct Swap permissions
-    sudo chmod 600 /swapfile
+    sudo chmod 0600 /swapfile
 
     # Setup Swap space
     sudo mkswap /swapfile
@@ -95,12 +97,11 @@ if [[ ! -z $2 && ! $2 =~ false && $2 =~ ^[0-9]*$ ]]; then
     sudo swapon /swapfile
 
     # Make the Swap file permanent
-    echo "/swapfile   none    swap    sw    0   0" | sudo tee -a /etc/fstab
+    echo "/swapfile   swap    swap    defaults    0   0" | sudo tee -a /etc/fstab
 
     # Add some swap settings:
     # vm.swappiness=10: Means that there wont be a Swap file until memory hits 90% useage
     # vm.vfs_cache_pressure=50: read http://rudd-o.com/linux-and-free-software/tales-from-responsivenessland-why-linux-feels-slow-and-how-to-fix-that
-    #printf "vm.swappiness=10\nvm.vfs_cache_pressure=50" | sudo tee -a /etc/sysctl.conf && sysctl -p
     
     # For an explanation of swap files in Linux visit https://wiki.archlinux.org/index.php/swap
     sudo sysctl vm.swappiness=10
